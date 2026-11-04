@@ -6,7 +6,7 @@
 
 **An open-source, UI-free, cross-platform audio conversion engine.**
 
-![Project Status](https://img.shields.io/badge/status-architecture%20%26%20planning-374151?style=for-the-badge)
+![Project Status](https://img.shields.io/badge/status-experimental%20CLI-374151?style=for-the-badge)
 ![License](https://img.shields.io/badge/original%20code-Apache--2.0-blue?style=for-the-badge)
 ![Focus](https://img.shields.io/badge/interface-API%20%2B%20SDK%20%2B%20CLI-0f766e?style=for-the-badge)
 
@@ -19,7 +19,7 @@
 ---
 
 > [!IMPORTANT]
-> **Development status — architecture specification.** This repository documentation describes **planned capabilities**, not a finished or verified converter. The project will ship working, tested components incrementally. No UI, dashboard or mobile app will be built as part of the engine itself.
+> **Development status — experimental CLI and architecture specification.** This repository documentation describes **planned capabilities**, not a finished or verified converter. The project will ship working, tested components incrementally. No UI, dashboard or mobile app will be built as part of the engine itself.
 
 ## Why TONG Audio Engine?
 
@@ -89,6 +89,10 @@ TONG Audio Engine separates **acquisition** from **conversion**. A URL extractor
 ## Open-source licensing
 
 Original TONG-owned code is published under the **Apache License 2.0**. This does **not** relicense FFmpeg, GStreamer, Symphonia, yt-dlp, codecs or other dependencies. Some FFmpeg builds are LGPL; enabling GPL components changes distribution obligations. Review [third-party license compliance](docs/LICENSE_COMPLIANCE.md) before publishing binaries.
+
+## Experimental CLI (first implementation)
+
+The repo now includes a **working-source headless Rust CLI** for permitted local files, with FFmpeg/FFprobe as installed dependencies. **Not yet production-ready or a mobile SDK.** Run `cargo build --release` and use `cargo run -- convert --input voice.wav --output voice.mp3 --bitrate 192k`. See [CLI commands and limitations](docs/CLI.md).
 
 ## Contributing
 

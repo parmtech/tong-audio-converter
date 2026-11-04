@@ -1,0 +1,30 @@
+name: TONG Audio Engine CLI CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+      - run: cargo test
+      - run: cargo build --release
+      - name: Verify local WAV to MP3 (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          ffmpeg -hide_banner -loglevel error -f lavfi -i "sine=frequency=440:duration=0.3" -c:a pcm_s16le "$RUNNER_TEMP/input.wav"
+          cargo run -- probe --input "$RUNNER_TEMP/input.wav" > "$RUNNER_TEMP/probe.json"
+          cargo run -- convert --input "$RUNNER_TEMP/input.wav" --output "$RUNNER_TEMP/output.mp3" --bitrate 128k
+          ffprobe -v error -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$RUNNER_TEMP/output.mp3" | grep -q '^mp3$'
