@@ -2,7 +2,7 @@ use std::{env, fs, path::{Path, PathBuf}, process::{Command, ExitCode}, time::{S
 
 const HELP: &str = "TONG Audio Engine (experimental, local media only)\n\
 Commands:\n  tong-audio capabilities\n  tong-audio probe --input FILE\n\
-  tong-audio convert --input FILE --output FILE [--bitrate 192k] [--sample-rate 44100] [--channels 2]\n\
+  tong-audio mp3 --input FILE --output FILE.mp3 [--bitrate 64k]\n\\\n  tong-audio convert --input FILE --output FILE [--bitrate 192k] [--sample-rate 44100] [--channels 2]\n\
   tong-audio extract --input VIDEO --output AUDIO [same options]\n\
   tong-audio --help | --version\n\
 Requires ffmpeg/ffprobe in PATH or TONG_FFMPEG/TONG_FFPROBE. Output is never overwritten.\n";
@@ -112,6 +112,15 @@ fn run(args: Vec<String>) -> Result<(), String> {
             if !output.status.success() { return Err(String::from_utf8_lossy(&output.stderr).to_string()); }
             print!("{}", String::from_utf8_lossy(&output.stdout));
             Ok(())
+        }
+        Some("mp3") => {
+            let mut o = options(&args[1..])?;
+            let output = o.output.as_deref().ok_or("missing --output")?;
+            if output.extension().and_then(|x| x.to_str()).map(|x| x.eq_ignore_ascii_case("mp3")) != Some(true) {
+                return Err("mp3 requires an .mp3 output filename".into());
+            }
+            if o.bitrate.is_none() { o.bitrate = Some("64k".into()); }
+            convert(o)
         }
         Some("convert" | "extract") => convert(options(&args[1..])?),
         Some(other) => Err(format!("unknown command {other}; see --help")),

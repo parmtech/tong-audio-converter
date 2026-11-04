@@ -40,5 +40,12 @@ jobs:
         run: |
           ffmpeg -hide_banner -loglevel error -f lavfi -i "sine=frequency=440:duration=0.3" -c:a pcm_s16le "$RUNNER_TEMP/input.wav"
           cargo run -- probe --input "$RUNNER_TEMP/input.wav" > "$RUNNER_TEMP/probe.json"
-          cargo run -- convert --input "$RUNNER_TEMP/input.wav" --output "$RUNNER_TEMP/output.mp3" --bitrate 128k
+          cargo run -- mp3 --input "$RUNNER_TEMP/input.wav" --output "$RUNNER_TEMP/output.mp3"
+          test -s "$RUNNER_TEMP/output.mp3"
+          if cargo run -- mp3 --input "$RUNNER_TEMP/input.wav" --output "$RUNNER_TEMP/output.mp3"; then
+            echo "ERROR: existing output was overwritten" >&2
+            exit 1
+          fi
+          cargo run -- mp3 --input "$RUNNER_TEMP/input.wav" --output "$RUNNER_TEMP/quality128.mp3" --bitrate 128k
+          test -s "$RUNNER_TEMP/quality128.mp3"
           ffprobe -v error -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$RUNNER_TEMP/output.mp3" | grep -q '^mp3$'
