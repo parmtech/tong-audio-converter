@@ -20,6 +20,12 @@ jobs:
           components: rustfmt
       - run: cargo test
       - run: cargo build --release
+      - name: Install FFmpeg for integration test (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ffmpeg
       - name: Verify local WAV to MP3 (Linux)
         if: runner.os == 'Linux'
         shell: bash
