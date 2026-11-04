@@ -1,0 +1,21 @@
+# Rust
+/target/
+**/*.rs.bk
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local media / output artifacts
+*.tmp
+*.part
+*.log
+.env
+.env.*
+!*.example
+
+# Secrets
+*.key
+*.pem
