@@ -26,6 +26,14 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install -y ffmpeg
+      - name: Upload experimental CLI binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: tong-audio-cli-${{ runner.os }}
+          path: |
+            target/release/tong-audio
+            target/release/tong-audio.exe
+          if-no-files-found: error
       - name: Verify local WAV to MP3 (Linux)
         if: runner.os == 'Linux'
         shell: bash
